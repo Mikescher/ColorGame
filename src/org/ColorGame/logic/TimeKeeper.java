@@ -47,7 +47,7 @@ public class TimeKeeper {
 			rem_time += ColorGameState.TIME_BONUS * 1000;
 			
 			startTime = now();
-			maxTime = startTime + rem_time;
+			maxTime = rem_time;
 		}
 	}
 	

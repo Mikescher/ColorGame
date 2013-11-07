@@ -13,17 +13,17 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.FontUtils;
 
 public class GameOverState extends BasicGameState {
-	private final UnicodeFont mainFont = new UnicodeFont(new Font("Arial", Font.PLAIN, 20), 128, true, false);
-	
+	private final UnicodeFont mainFont = new UnicodeFont(new Font("Arial", Font.PLAIN, 20), 100, true, false);
+
 	private boolean clicked = false;
-	
+
 	private int points;
-	
+
 	@SuppressWarnings("unchecked")
 	public GameOverState() {
 		// INIT FONT
 		mainFont.getEffects().add(new ColorEffect(Color.WHITE));
-		
+
 		mainFont.addAsciiGlyphs();
 		try {
 			mainFont.loadGlyphs();
@@ -34,28 +34,28 @@ public class GameOverState extends BasicGameState {
 
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
-    	// TODO Auto-generated constructor stub
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
-		FontUtils.drawCenter(mainFont, "<"+points+">", 0, ColorGameState.BOARD_HEIGHT * 66 / 2 -128, ColorGameState.BOARD_WIDTH * 66);
-		FontUtils.drawCenter(mainFont, "RESTART", 0, ColorGameState.BOARD_HEIGHT * 66 / 2 +64, ColorGameState.BOARD_WIDTH * 66);
+		FontUtils.drawCenter(mainFont, "<" + points + ">", 0, ColorGameState.BOARD_HEIGHT * 66 / 2 - 100, ColorGameState.BOARD_WIDTH * 66);
+		FontUtils.drawCenter(mainFont, "RESTART", 0, ColorGameState.BOARD_HEIGHT * 66 / 2 + 50, ColorGameState.BOARD_WIDTH * 66);
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		if (clicked) {
 			clicked = false;
-			
+
 			game.enterState(App.STATE_START);
 		}
 	}
-	
-    @Override
-    public void mousePressed(int button, int x, int y) {
-    	clicked = true;
-    }
+
+	@Override
+	public void mousePressed(int button, int x, int y) {
+		clicked = true;
+	}
 
 	@Override
 	public int getID() {

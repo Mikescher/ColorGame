@@ -3,6 +3,7 @@ package org.ColorGame.logic;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.ColorGame.ColorGameState;
 import org.lwjgl.util.Point;
 
 public class GameBoard {
@@ -19,6 +20,8 @@ public class GameBoard {
 
 	private int[][] board;
 	private TimeKeeper timekeeper = new TimeKeeper();
+	
+	private boolean suppressListener = false;
 
 	public GameBoard(int w, int h, int colCount) {
 		this.width = w;
@@ -29,11 +32,16 @@ public class GameBoard {
 	}
 	
 	public void init() {
+		suppressListener = true;
 		clearBoard();
+		suppressListener = false;
 		
 		updateEmptyBoardCells();
 		
 		timekeeper.restart();
+		
+		if (! ColorGameState.SHOW_MAP_BUILD)
+			if (! suppressListener) for (FieldChangeListener f : listener) f.sync();
 	}
 
 	private void clearBoard() {
@@ -56,6 +64,8 @@ public class GameBoard {
 		boolean changed = true;
 
 		while (changed) {
+			if (! suppressListener) for (FieldChangeListener f : listener) f.beginTransformationBlock();
+			
 			changed = false;
 			for (int y = (height - 1); y > 0; y--) {
 				for (int x = 0; x < width; x++) {
@@ -65,16 +75,25 @@ public class GameBoard {
 					}
 				}
 			}
+			
+			if (! suppressListener) for (FieldChangeListener f : listener) f.endTransformationBlock();
 		}
 	}
-	
+
 	private void updateEmptyBoardCells() {
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				if (getColor(x, y) == COLOR_NOCOL) {
-					setColor(x, y, getRandomColor());
+		boolean changed = true;
+
+		while (changed) {
+			changed = false;
+			for (int x = 0; x < width; x++) {
+				for (int y = 0; y < 1; y++) {
+					if (getColor(x, y) == COLOR_NOCOL) {
+						setColor(x, y, getRandomColor());
+						changed = true;
+					}
 				}
 			}
+			updateGravitation();
 		}
 
 		doCollisions();
@@ -173,22 +192,23 @@ public class GameBoard {
 		if (getColor(x, y) != COLOR_NOCOL) System.err.println("Tryd to change field col: " + x + "::" + y + "::" + c);
 		board[x][y] = c;
 		
-		for (FieldChangeListener f : listener) f.onCellAdded(x, y, c);
+		if (! suppressListener) for (FieldChangeListener f : listener) f.onCellAdded(x, y, c);
 	}
 	
 	public void moveColor(int px, int py, int nx, int ny) {
 		int c = getColor(px, py);
+		if (c == COLOR_NOCOL) System.err.println("Tryd to change field col: " + px + "::" + py + "::" + c);
 		board[nx][ny] = c;
 		board[px][py] = COLOR_NOCOL;
 		
-		for (FieldChangeListener f : listener) f.onCellColorMoved(px, py, nx, ny, c);
+		if (! suppressListener) for (FieldChangeListener f : listener) f.onCellColorMoved(px, py, nx, ny, c);
 	}
 	
 	public void clearColor(int x, int y) {
 		int c = getColor(x, y);
 		board[x][y] = COLOR_NOCOL;
 		
-		for (FieldChangeListener f : listener) f.onCellRemoved(x, y, c);
+		if (! suppressListener) for (FieldChangeListener f : listener) f.onCellRemoved(x, y, c);
 	}
 	
 	private void switchColor(int ax, int ay, int bx, int by) {
@@ -198,7 +218,7 @@ public class GameBoard {
 		board[ax][ay] = b;
 		board[bx][by] = a;
 		
-		for (FieldChangeListener f : listener) f.onCellSwitch(ax, ay, bx, by);
+		if (! suppressListener) for (FieldChangeListener f : listener) f.onCellSwitch(ax, ay, bx, by);
 	}
 
 	public int getWidth() {

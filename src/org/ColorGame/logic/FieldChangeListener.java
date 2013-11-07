@@ -7,4 +7,7 @@ public interface FieldChangeListener {
 	public void onCellColorMoved(int prevX, int prevY, int nextX, int nextY, int col);
 	
 	public void onAddPoints(int p);
+	public void beginTransformationBlock();
+	public void endTransformationBlock();
+	public void sync();
 }
