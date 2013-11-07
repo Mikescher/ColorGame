@@ -4,16 +4,14 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 
 public class Main {
-
-    public static void main(String[] arguments)
-    {
+    public static void main(String[] arguments) {
         try {
             AppGameContainer app = new AppGameContainer(new Game());
-            app.setDisplayMode(800, 600, false);
+            app.setDisplayMode(600, 640, false);
+            app.setShowFPS(false);
             app.start();
         } catch (SlickException e) {
             e.printStackTrace();
         }
     }
-
 }
