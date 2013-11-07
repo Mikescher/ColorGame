@@ -18,6 +18,7 @@ public class GameBoard {
 	private final int colorCount;
 
 	private int[][] board;
+	private TimeKeeper timekeeper = new TimeKeeper();
 
 	public GameBoard(int w, int h, int colCount) {
 		this.width = w;
@@ -31,6 +32,8 @@ public class GameBoard {
 		clearBoard();
 		
 		updateEmptyBoardCells();
+		
+		timekeeper.restart();
 	}
 
 	private void clearBoard() {
@@ -43,6 +46,8 @@ public class GameBoard {
 	
 	public void switchCells(int ax, int ay, int bx, int by) {
 		switchColor(ax, ay, bx, by);
+		
+		timekeeper.doTurn();
 		
 		doCollisions();
 	}
@@ -235,5 +240,9 @@ public class GameBoard {
 		board[bx][by] = b;
 		
 		return collC > 0;
+	}
+
+	public TimeKeeper getTimekeeper() {
+		return timekeeper;
 	}
 }

@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.ColorGame.ColorGameState;
 import org.ColorGame.logic.FieldChangeListener;
 import org.ColorGame.logic.GameBoard;
 import org.lwjgl.util.Point;
@@ -16,8 +17,7 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.util.FontUtils;
 
 public class GameBoardView implements FieldChangeListener{
-
-	private final TrueTypeFont numberFont = new TrueTypeFont(new Font("Arial", 0, 24), true);
+	private final static TrueTypeFont numberFont = new TrueTypeFont(new Font("Arial", 0, 24), true);
 	
 	private final int width;
 	private final int height;
@@ -149,7 +149,12 @@ public class GameBoardView implements FieldChangeListener{
 			}
 		}
 		
-		FontUtils.drawCenter(numberFont, "Points: " + points, 0, 600, 600, Color.white);
+		g.setColor(Color.white);
+		g.setFont(numberFont);
+		
+		FontUtils.drawCenter(numberFont, "Points: " + points, 0, height, width, Color.white);
+		g.drawString(String.format("%05.2f / %04.0fs", board.getTimekeeper().getElapsedTime(), board.getTimekeeper().getMaxTime()), width - 150, height);
+		g.drawString(String.format("Turns: %2d / %2d", board.getTimekeeper().getTurnCount(), ColorGameState.TURN_COUNT), 5, height);
 	}
 
 	private boolean isSelected() {
@@ -188,5 +193,9 @@ public class GameBoardView implements FieldChangeListener{
 	
 	public void resetPoints() {
 		points = 0;
+	}
+
+	public int getPoints() {
+		return points;
 	}
 }
